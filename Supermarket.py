@@ -31,7 +31,7 @@ else:
     df_filtered = df[df["Month"] == selected_month]
 
 # Display a title above the charts
-st.title("Sales Data for Selected Month")
+st.title("Supermarket Sales Data for Selected Month")
 
 st.write("---")
 
