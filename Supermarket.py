@@ -24,50 +24,69 @@ unique_months = ['All'] + df['Month'].unique().tolist()
 # Create a sidebar selectbox to choose a month with 'All' option
 selected_month = st.sidebar.selectbox("Month", unique_months)
 
-# Filter the DataFrame based on the selected month
-if selected_month == 'All':
-    df_filtered = df  # No filter if 'All' is selected
-else:
-    df_filtered = df[df["Month"] == selected_month]
+# Add new sidebar options for City, Gender, and Product Line
+selected_city = st.sidebar.multiselect("City", df['City'].unique())
+selected_gender = st.sidebar.multiselect("Gender", df['Gender'].unique())
+selected_product_line = st.sidebar.multiselect("Product Line", df['Product line'].unique())
+
+# Filter the DataFrame based on the selected options
+df_filtered = df
+if selected_month != 'All':
+    df_filtered = df_filtered[df_filtered["Month"] == selected_month]
+if selected_city:
+    df_filtered = df_filtered[df_filtered["City"].isin(selected_city)]
+if selected_gender:
+    df_filtered = df_filtered[df_filtered["Gender"].isin(selected_gender)]
+if selected_product_line:
+    df_filtered = df_filtered[df_filtered["Product line"].isin(selected_product_line)]
 
 # Display a title above the charts
-st.title("Supermarket Sales Data for Selected Month")
-st.subheader("For this specific analysis, I've chosen a Supermarket dataset from Kaggle's repository focusing on Supermarket Sales")
+st.title("Supermarket Sales Data and Habits Analysis")
 
+if st.button("Go to Habits Analysis"):
+    # Code to navigate to the new "Habits" page
+    st.experimental_set_query_params(tab="habits")
 
-st.write("---")
+if st.experimental_get_query_params().get("tab") == "habits":
+    # Visualization for Habits Analysis
+    st.write("## Habits Analysis")
+    # Add your code for habits analysis here, such as the gender consumption comparison chart
+    # Example:
+    habits_data = df_filtered.groupby('Gender')['Total'].sum().reset_index()
+    habits_chart = px.bar(habits_data, x='Gender', y='Total', title='Consumption Comparison by Gender')
+    st.plotly_chart(habits_chart)
 
-# Display visualizations using columns
-col1, col2 = st.columns(2)
-col3, col4, col5 = st.columns(3)
+else:
+    # Display visualizations using columns
+    col1, col2 = st.columns(2)
+    col3, col4, col5 = st.columns(3)
 
-# Visualization 1: Billing per Day
-fig_date = px.bar(df_filtered, x="Date", y="Total", color="City", title="Billing per Day")
-col1.plotly_chart(fig_date, use_container_width=True)
+    # Visualization 1: Billing per Day
+    fig_date = px.bar(df_filtered, x="Date", y="Total", color="City", title="Billing per Day")
+    col1.plotly_chart(fig_date, use_container_width=True)
 
-# Visualization 2: Billing per Product
-fig_prod = px.bar(df_filtered, x="Date", y="Product line", color="City", title="Billing per Product", orientation="h")
-col2.plotly_chart(fig_prod, use_container_width=True)
+    # Visualization 2: Billing per Product
+    fig_prod = px.bar(df_filtered, x="Date", y="Product line", color="City", title="Billing per Product", orientation="h")
+    col2.plotly_chart(fig_prod, use_container_width=True)
 
+    # Visualization 3: Billing by City
+    city_total_sales = df_filtered.groupby("City")[["Total"]].sum().reset_index()
+    fig_city = px.bar(city_total_sales, x="City", y="Total", title="Billing by City")
+    col3.plotly_chart(fig_city, use_container_width=True)
 
-# Visualization 3: Billing by City
-city_total_sales = df_filtered.groupby("City")[["Total"]].sum().reset_index()
-fig_city = px.bar(city_total_sales, x="City", y="Total", title="Billing by City")
-col3.plotly_chart(fig_city, use_container_width=True)
+    # Visualization 4: Billing by type of Payment
+    fig_type = px.pie(df_filtered, values="Total", names="Payment", title="Billing by type of Payment")
+    col4.plotly_chart(fig_type, use_container_width=True)
 
-# Visualization 4: Billing by type of Payment
-fig_type = px.pie(df_filtered, values="Total", names="Payment", title="Billing by type of Payment")
-col4.plotly_chart(fig_type, use_container_width=True)
+    # Visualization 5: Evaluation by City
+    city_total_ratings = df_filtered.groupby("City")[["Rating"]].mean().reset_index()
+    fig_rating = px.bar(city_total_ratings, x="Rating", y="City", title="Evaluation by City")
+    col5.plotly_chart(fig_rating, use_container_width=True)
 
-# Visualization 5: Evaluation by City
-city_total_ratings = df_filtered.groupby("City")[["Rating"]].mean().reset_index()
-fig_rating = px.bar(city_total_ratings, x="Rating", y="City", title="Evaluation by City")
-col5.plotly_chart(fig_rating, use_container_width=True)
+    st.write("---")
 
-st.write("---")
+    # Display a title above the table
+    st.title("Table")
 
-# Display a title above the table
-st.title("Table")
-
-# Display the DataFrame table at the bottom
-st.write(df_filtered)
+    # Display the DataFrame table at the bottom
+    st.write(df_filtered)
