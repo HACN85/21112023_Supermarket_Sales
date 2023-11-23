@@ -40,26 +40,16 @@ if selected_gender:
 if selected_product_line:
     df_filtered = df_filtered[df_filtered["Product line"].isin(selected_product_line)]
 
-# Display a title above the charts
-st.title("upermarket Sales Data and Habits Analysis")
+# Display a title above the tabs
+st.title("Supermarket Sales Data Analysis")
 
-if st.button("Go to Habits Analysis"):
-    # Code to navigate to the new "Habits" page
-    st.experimental_set_query_params(tab="habits")
+# Create tabs for "Sales" and "Habits"
+tabs = ["Sales", "Habits"]
+selected_tab = st.sidebar.radio("Go to", tabs)
 
-if st.experimental_get_query_params().get("tab") == "habits":
-    # Visualization for Habits Analysis
-    st.write("## Habits Analysis")
-    # Add your code for habits analysis here, such as the gender consumption comparison chart
-    # Example:
-    habits_data = df_filtered.groupby('Gender')['Total'].sum().reset_index()
-    habits_chart = px.bar(habits_data, x='Gender', y='Total', title='Consumption Comparison by Gender')
-    st.plotly_chart(habits_chart)
-
-else:
+if selected_tab == "Sales":
     # Display visualizations using columns
-    col1, col2 = st.columns(2)
-    col3, col4, col5 = st.columns(3)
+    col1, col2, col3 = st.columns([1, 1, 2])
 
     # Visualization 1: Billing per Day
     fig_date = px.bar(df_filtered, x="Date", y="Total", color="City", title="Billing per Day")
@@ -75,6 +65,7 @@ else:
     col3.plotly_chart(fig_city, use_container_width=True)
 
     # Visualization 4: Billing by type of Payment
+    col4, col5 = st.columns([1, 1])
     fig_type = px.pie(df_filtered, values="Total", names="Payment", title="Billing by type of Payment")
     col4.plotly_chart(fig_type, use_container_width=True)
 
@@ -90,3 +81,15 @@ else:
 
     # Display the DataFrame table at the bottom
     st.write(df_filtered)
+
+elif selected_tab == "Habits":
+    # Visualization for Habits Analysis
+    st.title("Habits Analysis")
+
+    habits_data = df_filtered.groupby('Gender')['Total'].sum().reset_index()
+    habits_chart = px.bar(habits_data, x='Gender', y='Total', title='Consumption Comparison by Gender')
+    st.plotly_chart(habits_chart)
+
+    st.write("---")
+    st.title("Table for Habits Analysis")
+    st.write(df_filtered)  # Display the filtered data in a table for habits analysis
