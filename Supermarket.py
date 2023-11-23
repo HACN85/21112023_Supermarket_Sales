@@ -41,22 +41,13 @@ if selected_product_line:
     df_filtered = df_filtered[df_filtered["Product line"].isin(selected_product_line)]
 
 # Display a title above the charts
-st.title("Supermarket Sales Data and Habits Analysis")
+st.title("Supermarket Sales Data")
 
-if st.button("Go to Habits Analysis"):
-    # Code to navigate to the new "Habits" page
-    st.experimental_set_query_params(tab="habits")
+# Create tabs for "Sales" and "Habits"
+tabs = ["Sales", "Habits"]
+selected_tab = st.radio("Go to", tabs)
 
-if st.experimental_get_query_params().get("tab") == "habits":
-    # Visualization for Habits Analysis
-    st.write("## Habits Analysis")
-    # Add your code for habits analysis here, such as the gender consumption comparison chart
-    # Example:
-    habits_data = df_filtered.groupby('Gender')['Total'].sum().reset_index()
-    habits_chart = px.bar(habits_data, x='Gender', y='Total', title='Consumption Comparison by Gender')
-    st.plotly_chart(habits_chart)
-
-else:
+if selected_tab == "Sales":
     # Display visualizations using columns
     col1, col2 = st.columns(2)
     col3, col4, col5 = st.columns(3)
@@ -90,3 +81,16 @@ else:
 
     # Display the DataFrame table at the bottom
     st.write(df_filtered)
+
+elif selected_tab == "Habits":
+    # Visualization for Habits Analysis
+    st.write("## Habits Analysis")
+    # Add your code for habits analysis here, such as the gender consumption comparison chart
+    # Example:
+    habits_data = df_filtered.groupby('Gender')['Total'].sum().reset_index()
+    habits_chart = px.bar(habits_data, x='Gender', y='Total', title='Consumption Comparison by Gender')
+    st.plotly_chart(habits_chart)
+
+    st.write("---")
+    st.title("Table for Habits Analysis")
+    st.write(df_filtered)  # Display the filtered data in a table for habits analysis
