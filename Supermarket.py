@@ -40,12 +40,16 @@ if selected_gender:
 if selected_product_line:
     df_filtered = df_filtered[df_filtered["Product line"].isin(selected_product_line)]
 
-# Display a title above the tabs
+# Display a title above the buttons
 st.title("Supermarket Sales Data Analysis")
 
-# Create tabs for "Sales" and "Habits"
-tabs = ["Sales", "Habits"]
-selected_tab = st.sidebar.radio("Go to", tabs)
+# Add buttons for Sales and Habits below the title
+if st.button("Sales"):
+    selected_tab = "Sales"
+elif st.button("Habits"):
+    selected_tab = "Habits"
+else:
+    selected_tab = "Sales"
 
 if selected_tab == "Sales":
     # Display visualizations using columns
