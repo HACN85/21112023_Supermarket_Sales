@@ -41,7 +41,7 @@ if selected_product_line:
     df_filtered = df_filtered[df_filtered["Product line"].isin(selected_product_line)]
 
 # Display a title above the charts
-st.title("upermarket Sales Data and Habits Analysis")
+st.title("Supermarket Sales Data and Habits Analysis")
 
 if st.button("Go to Habits Analysis"):
     # Code to navigate to the new "Habits" page
