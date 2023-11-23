@@ -43,7 +43,7 @@ if selected_product_line:
 # Display a title above the buttons
 st.title("Supermarket Sales Data Analysis")
 
-# Add buttons for Sales and Habits below the title
+# Buttons for Sales and Habits below the title
 if st.button("Sales"):
     selected_tab = "Sales"
 elif st.button("Habits"):
