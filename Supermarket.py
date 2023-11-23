@@ -49,8 +49,7 @@ selected_tab = st.sidebar.radio("Go to", tabs)
 
 if selected_tab == "Sales":
     # Display visualizations using columns
-    col1, col2 = st.columns(2)
-    col3, col4, col5 = st.columns(3)
+    col1, col2, col3 = st.columns([1, 1, 2])
 
     # Visualization 1: Billing per Day
     fig_date = px.bar(df_filtered, x="Date", y="Total", color="City", title="Billing per Day")
@@ -66,6 +65,7 @@ if selected_tab == "Sales":
     col3.plotly_chart(fig_city, use_container_width=True)
 
     # Visualization 4: Billing by type of Payment
+    col4, col5 = st.columns([1, 1])
     fig_type = px.pie(df_filtered, values="Total", names="Payment", title="Billing by type of Payment")
     col4.plotly_chart(fig_type, use_container_width=True)
 
