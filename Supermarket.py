@@ -40,15 +40,17 @@ if selected_gender:
 if selected_product_line:
     df_filtered = df_filtered[df_filtered["Product line"].isin(selected_product_line)]
 
-# Display a title above the buttons
+# Display a title above the tabs
 st.title("Supermarket Sales Data Analysis")
 
-# Buttons for Sales and Habits in the sidebar
-selected_tab = st.sidebar.radio("Go to", ("Sales", "Habits"))
+# Create tabs for "Sales" and "Habits"
+tabs = ["Sales", "Habits"]
+selected_tab = st.sidebar.radio("Go to", tabs)
 
 if selected_tab == "Sales":
     # Display visualizations using columns
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
+    col3, col4, col5 = st.columns(3)
 
     # Visualization 1: Billing per Day
     fig_date = px.bar(df_filtered, x="Date", y="Total", color="City", title="Billing per Day")
@@ -63,6 +65,15 @@ if selected_tab == "Sales":
     fig_city = px.bar(city_total_sales, x="City", y="Total", title="Billing by City")
     col3.plotly_chart(fig_city, use_container_width=True)
 
+    # Visualization 4: Billing by type of Payment
+    fig_type = px.pie(df_filtered, values="Total", names="Payment", title="Billing by type of Payment")
+    col4.plotly_chart(fig_type, use_container_width=True)
+
+    # Visualization 5: Evaluation by City
+    city_total_ratings = df_filtered.groupby("City")[["Rating"]].mean().reset_index()
+    fig_rating = px.bar(city_total_ratings, x="Rating", y="City", title="Evaluation by City")
+    col5.plotly_chart(fig_rating, use_container_width=True)
+
     st.write("---")
 
     # Display a title above the table
@@ -72,15 +83,12 @@ if selected_tab == "Sales":
     st.write(df_filtered)
 
 elif selected_tab == "Habits":
-    # Display visualizations using columns
-    col1, col2 = st.columns(2)
-
     # Visualization for Habits Analysis
     st.title("Habits Analysis")
 
     habits_data = df_filtered.groupby('Gender')['Total'].sum().reset_index()
     habits_chart = px.bar(habits_data, x='Gender', y='Total', title='Consumption Comparison by Gender')
-    col1.plotly_chart(habits_chart, use_container_width=True)
+    st.plotly_chart(habits_chart)
 
     st.write("---")
     st.title("Table for Habits Analysis")
