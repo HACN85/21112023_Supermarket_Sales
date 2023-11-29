@@ -99,6 +99,7 @@ def main():
     page = st.sidebar.radio("Go to", ("Sales", "Habits"))
 
     # Sidebar menu for selecting month, city, and gender
+    st.sidebar.title("Filters")
     selected_month = st.sidebar.selectbox("Month", unique_months)
     selected_city = st.sidebar.selectbox("City", ["All"] + df["City"].unique().tolist())
     selected_gender = st.sidebar.selectbox("Gender", ["All", "Male", "Female"])
