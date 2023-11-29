@@ -97,6 +97,7 @@ def main():
     # Sidebar menu options
     st.sidebar.title("Navigation")
     page = st.sidebar.radio("Go to", ("Sales", "Habits"))
+    st.write("---")
 
     # Sidebar menu for selecting month, city, and gender
     st.sidebar.title("Filters")
